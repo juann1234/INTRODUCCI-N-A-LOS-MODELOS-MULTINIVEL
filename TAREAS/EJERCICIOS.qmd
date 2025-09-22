@@ -1,0 +1,225 @@
+---
+title: "EJERCICIOS"
+author: "Juan APolo"
+format: pdf
+editor: visual
+---
+
+## Ejercicio 1 – Mínimos Cuadrados Generalizados (GLS)
+
+Se parte del modelo lineal:
+
+$$
+Y = X\beta + \varepsilon, \quad E(\varepsilon)=0, \quad Cov(\varepsilon) = \sigma^2 \Omega,
+$$
+
+donde $\Omega$ es una matriz simétrica definida positiva.
+
+El estimador de mínimos cuadrados generalizados (GLS) está dado por:
+
+$$
+\hat{\beta}_{GLS} = (X^T \Omega^{-1} X)^{-1} X^T \Omega^{-1} Y.
+$$
+
+------------------------------------------------------------------------
+
+### 1. ¿Cuándo coincide con el de OLS?
+
+El estimador de mínimos cuadrados ordinarios (OLS) es:
+
+$$
+\hat{\beta}_{OLS} = (X^T X)^{-1} X^T Y.
+$$
+
+Ambos coinciden cuando $\Omega = I$, es decir, cuando los errores son **esféricos** (homocedásticos y no correlacionados). En ese caso, el modelo cumple los supuestos clásicos de MCO y GLS se reduce a OLS.
+
+------------------------------------------------------------------------
+
+### 2. Insesgadez de los estimadores
+
+**Para OLS:**
+
+$$
+E(\hat{\beta}_{OLS}) = E\big[(X^T X)^{-1} X^T Y\big] 
+= (X^T X)^{-1} X^T E[Y].
+$$
+
+Como $E[Y] = X\beta$:
+
+$$
+E(\hat{\beta}_{OLS}) = (X^T X)^{-1} X^T X \beta = \beta.
+$$
+
+**Para GLS:**
+
+$$
+E(\hat{\beta}_{GLS}) = E\big[(X^T \Omega^{-1} X)^{-1} X^T \Omega^{-1} Y\big] 
+= (X^T \Omega^{-1} X)^{-1} X^T \Omega^{-1} E[Y].
+$$
+
+Nuevamente, $E[Y] = X\beta$:
+
+$$
+E(\hat{\beta}_{GLS}) = (X^T \Omega^{-1} X)^{-1} X^T \Omega^{-1} X \beta = \beta.
+$$
+
+Por lo tanto, **ambos estimadores son insesgados**.
+
+------------------------------------------------------------------------
+
+### 3. Matriz de varianzas y covarianzas de OLS
+
+$$
+\hat{\beta}_{OLS} = (X^T X)^{-1} X^T Y
+= \beta + (X^T X)^{-1} X^T \varepsilon.
+$$
+
+Entonces:
+
+$$
+Cov(\hat{\beta}_{OLS}) = (X^T X)^{-1} X^T Cov(\varepsilon) X (X^T X)^{-1}.
+$$
+
+Como $Cov(\varepsilon) = \sigma^2 \Omega$:
+
+$$
+Cov(\hat{\beta}_{OLS}) = \sigma^2 (X^T X)^{-1} X^T \Omega X (X^T X)^{-1}.
+$$
+
+------------------------------------------------------------------------
+
+### 4. Matriz de varianzas y covarianzas de GLS
+
+$$
+\hat{\beta}_{GLS} = \beta + (X^T \Omega^{-1} X)^{-1} X^T \Omega^{-1} \varepsilon.
+$$
+
+Entonces:
+
+$$
+Cov(\hat{\beta}_{GLS}) = (X^T \Omega^{-1} X)^{-1} X^T \Omega^{-1} Cov(\varepsilon) \Omega^{-1} X (X^T \Omega^{-1} X)^{-1}.
+$$
+
+Sustituyendo $Cov(\varepsilon) = \sigma^2 \Omega$:
+
+$$
+Cov(\hat{\beta}_{GLS}) = \sigma^2 (X^T \Omega^{-1} X)^{-1}.
+$$
+
+------------------------------------------------------------------------
+
+### 5. (Opcional) Comparación de varianzas
+
+La diferencia es:
+
+$$
+Cov(\hat{\beta}_{OLS}) - Cov(\hat{\beta}_{GLS})
+= \sigma^2 \Big[ (X^T X)^{-1} X^T \Omega X (X^T X)^{-1} - (X^T \Omega^{-1} X)^{-1} \Big].
+$$
+
+Se puede demostrar que esta matriz es **definida positiva**, lo que implica que GLS es más eficiente que OLS (tiene menor varianza en el sentido de matriz de varianzas-covarianzas).
+
+------------------------------------------------------------------------
+
+## Ejercicio 2 – Modelo lineal de efectos mixtos (LME)
+
+Se parte del modelo para el grupo (i):
+
+$$
+Y_i = X_i\beta + Z_i b_i + \varepsilon_i,
+$$
+
+con los supuestos
+
+$$
+\varepsilon_i \sim N_{n_i}(0,\Sigma_i),\qquad b_i \sim N_q(0,D),\qquad i=1,\dots,N,
+$$
+
+y además
+
+$$
+E(\varepsilon_i b_i^\top)=0_{\,n_i\times q}.
+$$
+
+### Distribución condicional de (Y_i) dado (b_i)
+
+Condicionando en un valor observado (b_i) (por lo tanto (b_i) deja de ser aleatoria):
+
+**Momento de primer orden:**
+
+$$
+E(Y_i\mid b_i) = E(X_i\beta + Z_i b_i + \varepsilon_i \mid b_i)
+= X_i\beta + Z_i b_i + E(\varepsilon_i\mid b_i).
+$$
+
+Como $$(E(\varepsilon_i \mid b_i)=0)$$,
+
+$$
+\boxed{E(Y_i\mid b_i)=X_i\beta + Z_i b_i.}
+$$
+
+**Matriz de covarianza condicional:**
+
+$$
+\begin{aligned}
+\operatorname{Cov}(Y_i\mid b_i)
+&= \operatorname{Cov}(X_i\beta + Z_i b_i + \varepsilon_i \mid b_i) \\
+&= \operatorname{Cov}(\varepsilon_i\mid b_i) \\
+&= \Sigma_i.
+\end{aligned}
+$$
+
+Por tanto,
+
+$$
+\boxed{Y_i\mid b_i \sim N_{n_i}\big(X_i\beta + Z_i b_i,\ \Sigma_i\big).}
+$$
+
+### Distribución marginal de (Y_i) (integrando sobre (b_i))
+
+**Media marginal:**
+
+$$
+\begin{aligned}
+E(Y_i) &= E_{b_i}\big[ E(Y_i\mid b_i)\big] \\
+&= E_{b_i}\big[X_i\beta + Z_i b_i\big] \\
+&= X_i\beta + Z_i\,E(b_i) \\
+&= X_i\beta \quad(\text{pues }E(b_i)=0).
+\end{aligned}
+$$
+
+$$
+\boxed{E(Y_i)=X_i\beta.}
+$$
+
+**Covarianza marginal:**
+
+Usando la descomposición de la covarianza total:
+
+$$
+\operatorname{Cov}(Y_i) = E_{b_i}\big[\operatorname{Cov}(Y_i\mid b_i)\big] + \operatorname{Cov}_{b_i}\big( E(Y_i\mid b_i)\big).
+$$
+
+$$
+E_{b_i}\big[\operatorname{Cov}(Y_i \mid b_i)\big] = \Sigma_i
+$$
+
+$$
+\operatorname{Cov}_{b_i}\!\big(E(Y_i \mid b_i)\big) 
+= \operatorname{Cov}_{b_i}\!\big(X_i \beta + Z_i b_i\big) 
+= Z_i D Z_i^T
+$$
+
+Por tanto
+
+$$
+\boxed{\operatorname{Cov}(Y_i) = \Sigma_i + Z_i D Z_i^T,}
+$$
+
+y finalmente
+
+$$
+\boxed{Y_i \sim N_{n_i}\big(X_i\beta,\ \Sigma_i + Z_i D Z_i^T\big).}
+$$
+
+------------------------------------------------------------------------
